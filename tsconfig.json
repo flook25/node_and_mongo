@@ -1,0 +1,26 @@
+// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "es2020",         /* Specify ECMAScript target version */
+    "module": "commonjs",       /* Specify module code generation: "CommonJS" (for Node.js) */
+    "outDir": "./dist",         /* Redirect output to a directory (optional, but good practice) */
+    "strict": true,             /* Enable all strict type-checking options */
+    "esModuleInterop": true,    /* Enables emit interoperability between CommonJS and ES Modules */
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing of paths in imports matches the file system */
+    "skipLibCheck": true,       /* Skip type checking of declaration files. */
+    "resolveJsonModule": true,  /* Include modules imported with '.json' extension */
+    "allowJs": true,            /* Allow JavaScript files to be compiled */
+    "lib": ["es2020", "dom"],    /* Specify library files to be included in the compilation. 'dom' for express */
+    "typeRoots": [              /* Specify list of folder names to include in type acquisition */
+      "./node_modules/@types"
+    ]
+  },
+  "include": [
+    "server.ts",
+    "prisma/**/*.ts" // Include any other TS files related to Prisma if you have them
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
