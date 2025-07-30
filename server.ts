@@ -218,6 +218,138 @@ app.get('/customer/contains/:keyword', async (req, res) => {
     }
 });
 
+app.get('/customer/sortByName', async (req, res) => {
+    try {
+        const customers = await prisma.customer.findMany({
+            orderBy: {
+                name : 'asc'
+            }
+        });
+        res.json(customers);
+    } catch (error : any) {
+        return res.status(500).json({ error: error.message});
+    }
+})
+
+app.get('/customer/whereAnd', async(req, res) => {
+    try {
+        const customers = await prisma.customer.findMany({
+            where: {
+                AND :[
+                    {
+                        name: {
+                            contains:'p'
+                        }
+                    }, {
+                        credit: {
+                            gt: 0
+                        }
+                    }
+
+
+                ]
+
+            }
+        });
+        res.json(customers);
+    } catch (error : any) {
+        return res.status(500).json({ error: error.message})
+    }
+});
+
+app.get('/customer/listBetweenCredit', async (req, res) => {
+    try {
+        const customers = await prisma.customer.findMany({
+            where: {
+                credit: {
+                    gt: 150000,
+                    lt: 3100000
+                }
+            }
+        });
+        res.json(customers);
+    } catch (error :any) {
+        return res.status(500).json({ error: error.message});
+    }
+});
+
+app.get('/customer/sumCredit', async (req , res) => {
+    try {
+        const sumCredit = await prisma.customer.aggregate({
+            _sum: {
+                credit: true
+            }
+        });
+        res.json({ sumCredit : sumCredit._sum.credit})
+    } catch (error : any) {
+        return res.status(500).json({ error: error.message});
+    }
+});
+
+
+app.get('/customer/maxCredit', async (req , res) => {
+    try {
+        const maxCredit = await prisma.customer.aggregate({
+            _max: {
+                credit: true
+            }
+        });
+        res.json({ maxCredit: maxCredit._max.credit });
+    } catch (error : any){
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/customer/minCredit', async (req, res) => {
+    try {
+        const minCredit = await prisma.customer.aggregate({
+            _min: {
+                credit: true
+            }
+        });
+        res.json({minCredit: minCredit._min.credit});
+    } catch (error : any) {
+        return res.status(500).json({ error: error.message})
+    }
+});
+
+app.get('/customer/avgCredit', async (req, res) => {
+    try {
+        const avgCredit = await prisma.customer.aggregate({
+            _avg: {
+                credit: true
+            }
+        });
+        res.json({ avgCredit: avgCredit._avg.credit});
+    } catch (error : any) {
+        return res.status(500).json({ error: error.message});
+    }
+});
+
+app.get('/customer/countCustomer' , async (req, res) => {
+    try {
+        const count = await prisma.customer.count();
+        res.json({countCustomer: count});
+    } catch (error :any) {
+        return res.status(500).json({ error: error.message})
+    }
+});
+
+app.post('/order/create' , async (req, res) => {
+    try {
+        const customerId = req.body.customerId;
+        const amount = req.body.amount;
+        const order = await prisma.order.create({
+            data: {
+                customerId: customerId, // <--- Add a comma here
+                amount: amount
+            }
+        });
+        res.json(order);
+    } catch (error : any) { // Consider removing ': any' if not using TypeScript or if it's causing issues.
+        return res.status(500).json({ error: error.message});
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
