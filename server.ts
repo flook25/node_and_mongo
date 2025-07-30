@@ -351,6 +351,54 @@ app.post('/order/create' , async (req, res) => {
     }
 });
 
+app.get('/customer/listOrder/:customerId', async (req, res) => {
+    try {
+        const customerId = req.params.customerId;
+        const orders = await prisma.order.findMany({
+            where : {
+                customerId: customerId
+            }
+        });
+        res.json(orders);
+    } catch (error: any) {
+        return res.status(500).json({ error: error.message});
+    }
+});
+
+app.get('/customer/listAllorder', async(req, res) => {
+    try {
+        const orders = await prisma.customer.findMany({
+            include: {
+                Order: true
+            }
+        });
+        res.json(orders);
+    } catch (error: any) {
+        return res.status(500).json({ error: error.message})
+    }
+});
+
+app.get('/customer/listOrderAndProduct/:customerId', async (req, res) => {
+    try {
+        const customerId = req.params.customerId;
+        const customers = await prisma.customer.findMany({
+            where: {
+                id: customerId
+            },
+            include: {
+                Order: {
+                    include: {
+                        Product: true
+                    }
+                }
+            }
+        });
+        res.json(customers);
+    } catch (error : any) {
+        return res.status(500).json({ error : error.message})
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

@@ -28,4 +28,13 @@ model Order {
   customerId String   @db.ObjectId
   customer   Customer @relation(fields: [customerId], references: [id])
   amount     Int
+  Product    Product? @relation(fields: [productId], references: [id])
+  productId  String?  @db.ObjectId 
+}
+
+model Product {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  price Int
+  Order Order[] 
 }
